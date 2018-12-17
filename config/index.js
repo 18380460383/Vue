@@ -4,6 +4,7 @@
 
 const path = require('path')
 
+const BASE_PATH='demo'
 module.exports = {
   dev: {
 
@@ -45,11 +46,11 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../demo/index.html'),
+    index: path.resolve(__dirname, '../'+BASE_PATH+'/index.html'),
     // Paths
-    assetsRoot: path.resolve(__dirname, '../demo'),
+    assetsRoot: path.resolve(__dirname, '../'+BASE_PATH),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/demo/',
+    assetsPublicPath: '/'+BASE_PATH+'/',
 
     /**
      * Source Maps
