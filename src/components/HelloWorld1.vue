@@ -1,5 +1,6 @@
 <template>
   <div class="hello" id="main">
+   <!-- <img  class="im radius" src="static/images/1.png"  style="height: 200px;width: 200px" alt=""/>-->
     <ul>
         <li v-for="lis in pro">
           <div class="liDiv">
@@ -7,9 +8,9 @@
               class="textRight"
               style="width: 50%"
               >
-              <img  class="im " src="../assets/img/7.jpg"  style="height: 200px"/>
+              <img  class="im radius" src="../assets/img/7.jpg"  style="height: 200px;width: 200px"/>
             </div>
-              <div class="box box_flex-direction_row textLeft" style="width: 50% ;height: 200px">
+              <div class="box box_flex-direction_row textLeft borderColor1" style="width: 50% ;height: 200px;margin: 0 0 0 10px">
                 <p @click="funAlert(lis.productId)" class="p0">{{lis.productId}}</p>
                 <p class="p0">{{"产品ID："+lis.productId}}</p>
                 <p class="p0">{{"产品名称："+lis.productName}}</p>
@@ -19,7 +20,8 @@
           </div>
         </li>
     </ul>
-    <div>
+    <div  v-show="loading">
+      <span class="infinite-scroll-text">{{tips}}</span>
     </div>
   </div>
 </template>
@@ -39,10 +41,14 @@ export default {
       msg: 'Welcome to Your Vue.js 1',
       ns: jso,
       liss: list,
-      pro: pro1
+      pro: pro1,
+      timer: null,
+      REQUIRE: true,
+      loading: false,
+      tips: '努力加载中...'
     }
   },
-  mounted () {
+ /* mounted () {
     // 缓存指针
     let _this = this
     // 设置一个开关来避免重负请求数据
@@ -61,17 +67,17 @@ export default {
         this.initArray()
       }
     })
-  },
+  },*/
   created: function () {
     this.getUrl()
     this.funjson()
     this.initArray()
-    this.funScrool()
-    this.getjson()
+
+    this.setTimer()
   },
   methods: {
     getjson () {
-      axios.get('../../static/json/data.json').then((res) => {
+      axios.get('static/json/data.json').then((res) => {
         var result = res.data
         /* var ob=JSON.parse(result)
         console.log(ob.status)
@@ -118,7 +124,39 @@ export default {
           me.initArray()// 在test3中调用test2的方法
         }
       }
+    },
+    setTimer () {
+      setTimeout(() => {
+        this.REQUIRE = true;
+        this.loading = false;
+        this.getjson()
+      }, 5000);
+    },
+    scrollBottom() {
+      // 变量scrollTop是滚动条滚动时，距离顶部的距离
+      var scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+      // 变量windowHeight是可视区的高度
+      var windowHeight = document.documentElement.clientHeight || document.body.clientHeight
+      // 变量scrollHeight是滚动条的总高度
+      var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight
+      // 滚动条到底部的条件
+      if (scrollTop + windowHeight == scrollHeight) {
+        // 写后台加载数据的函数
+        //me.initArray()// 在test3中调用test2的方法
+        this.REQUIRE = false;
+        this.loading = true;
+        this.tips = '努力加载中...';
+        this.setTimer()
+      }
     }
+  },
+  destroyed () {
+    clearInterval(this.timer)
+  },
+  mounted () {
+    // 添加滚动事件，检测滚动到页面底部
+    this.getjson()
+    window.addEventListener('scroll', this.scrollBottom)
   }
 }
 
@@ -158,6 +196,17 @@ export default {
   .p0{
     margin: 0 0 0 10px;
     padding: 0;
+  }
+  .radius{
+    border-style: solid;
+    border-radius: 100%;
+    border-width: 2px;
+    border-color: #f23023;
+  }
+  .borderColor1{
+    border-style: solid;
+    border-width: 1px;
+    border-color:#f23023;
   }
 
 </style>
